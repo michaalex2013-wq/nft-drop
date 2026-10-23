@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT DROP — Cases & Roulette</title>
+  <title>NFT DROP — Cases, Market & Top</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -14,10 +14,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .roulette-container { overflow: hidden; position: relative; }
-    .roulette-track {
-      display: flex; gap: 14px;
-      transition: transform 5s cubic-bezier(0.12, 0.8, 0.15, 1);
-    }
+    .roulette-track { display: flex; gap: 14px; transition: transform 5s cubic-bezier(0.12, 0.8, 0.15, 1); }
     .pointer {
       position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
       background: #3b82f6; z-index: 30; transform: translateX(-50%);
@@ -47,7 +44,7 @@
     <!-- Roulette Arena -->
     <div id="rouletteBlock" class="hidden glass-card rounded-3xl p-4 mb-6 border border-blue-500/30">
       <div class="text-center mb-3">
-        <h3 id="activeCaseTitle" class="font-extrabold text-lg text-indigo-300">Открытие кейса</h3>
+        <h3 id="activeCaseTitle" class="font-extrabold text-lg text-indigo-300">Открытие</h3>
       </div>
       <div class="roulette-container bg-slate-950 border border-slate-800 rounded-2xl p-2 h-36 flex items-center">
         <div class="pointer"></div>
@@ -56,11 +53,12 @@
       <div id="dropResult" class="hidden mt-3 p-3 bg-blue-950/80 border border-blue-500 rounded-2xl text-center font-bold text-blue-300 text-sm"></div>
     </div>
 
-    <!-- Tabs -->
-    <div class="grid grid-cols-3 gap-2 mb-6">
-      <button onclick="switchTab('cases')" id="btn-cases" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-blue-400 border-blue-500/50">📦 Кейсы</button>
-      <button onclick="switchTab('upgrade')" id="btn-upgrade" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-slate-400">⚡ Апгрейдер</button>
-      <button onclick="switchTab('profile')" id="btn-profile" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-slate-400">👤 Профиль</button>
+    <!-- Navigation Tabs -->
+    <div class="grid grid-cols-4 gap-1.5 mb-6">
+      <button onclick="switchTab('cases')" id="btn-cases" class="glass-card py-2.5 rounded-2xl font-bold text-[11px] text-blue-400 border-blue-500/50">📦 Кейсы</button>
+      <button onclick="switchTab('market')" id="btn-market" class="glass-card py-2.5 rounded-2xl font-bold text-[11px] text-slate-400">💎 Фрагмент</button>
+      <button onclick="switchTab('top')" id="btn-top" class="glass-card py-2.5 rounded-2xl font-bold text-[11px] text-slate-400">🏆 Лидеры</button>
+      <button onclick="switchTab('profile')" id="btn-profile" class="glass-card py-2.5 rounded-2xl font-bold text-[11px] text-slate-400">👤 Профиль</button>
     </div>
 
     <!-- TAB 1: CASES -->
@@ -68,31 +66,52 @@
       <div id="casesGrid" class="grid grid-cols-2 gap-3.5"></div>
     </div>
 
-    <!-- TAB 2: UPGRADE -->
-    <div id="tab-upgrade" class="hidden">
-      <div class="glass-card rounded-3xl p-6 text-center">
-        <h2 class="text-xl font-extrabold mb-2 text-indigo-300">⚡ NFT Upgrader</h2>
-        <p class="text-xs text-slate-400 mb-6">Повышай ценность своего NFT с шансом до 70%!</p>
-        <div class="w-36 h-36 mx-auto mb-6 flex items-center justify-center rounded-full border-4 border-indigo-500/30 bg-slate-900">
-          <span class="text-3xl">🔮</span>
+    <!-- TAB 2: FRAGMENT MARKET -->
+    <div id="tab-market" class="hidden">
+      <div class="glass-card rounded-3xl p-5 border border-indigo-500/20">
+        <h2 class="text-lg font-extrabold mb-1 text-indigo-300 flex items-center gap-2">💎 Fragment P2P Market</h2>
+        <p class="text-xs text-slate-400 mb-4">Покупайте и продавайте NFT за TON (1 TON = 100 ⭐)</p>
+        <div id="marketList" class="space-y-2 text-xs">
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">👑</span>
+              <div>
+                <div class="font-bold text-white">Legendary Crown</div>
+                <div class="text-[10px] text-slate-500">Продавец: @crypto_king</div>
+              </div>
+            </div>
+            <button onclick="alert('Для покупки требуется подключение TON кошелька!')" class="bg-cyan-600 px-3 py-1.5 rounded-xl font-bold text-white">2.5 TON</button>
+          </div>
         </div>
-        <button onclick="alert('Выберите предмет из инвентаря в профиле!')" class="w-full bg-indigo-600 py-3.5 rounded-2xl font-extrabold text-sm">Начать апгрейд</button>
       </div>
     </div>
 
-    <!-- TAB 3: PROFILE & INVENTORY -->
+    <!-- TAB 3: TOP LEADERBOARD -->
+    <div id="tab-top" class="hidden">
+      <div class="glass-card rounded-3xl p-5 border border-amber-500/20">
+        <h2 class="text-lg font-extrabold mb-4 text-amber-400 flex items-center gap-2">🏆 Топ Богатейших Игроков</h2>
+        <div id="leaderboardList" class="space-y-2 text-xs">
+          <p class="text-slate-500">Загрузка лидеров...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROFILE -->
     <div id="tab-profile" class="hidden">
       <div class="glass-card rounded-3xl p-5 mb-4">
-        <h3 class="font-extrabold text-base mb-3">🎁 Ежедневный бонус</h3>
-        <button onclick="claimBonus()" class="w-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold py-3 rounded-2xl text-xs mb-4">
-          Забрать бонус (+10 до 100 ⭐)
-        </button>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold">👤</div>
+          <div>
+            <h3 class="font-extrabold text-sm" id="profName">Игрок</h3>
+            <span id="profRole" class="text-[10px] font-black bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-lg">Игрок</span>
+          </div>
+        </div>
       </div>
 
       <div class="glass-card rounded-3xl p-5">
-        <h3 class="font-extrabold text-base mb-3">🎒 Ваш инвентарь NFT</h3>
-        <div id="inventoryList" class="grid grid-cols-2 gap-2 text-xs text-slate-400">
-          <p>Инвентарь пока пуст. Открывайте кейсы!</p>
+        <h3 class="font-extrabold text-sm mb-3">🎒 Инвентарь NFT</h3>
+        <div id="inventoryList" class="grid grid-cols-2 gap-2 text-xs">
+          <p class="text-slate-500 col-span-2">Инвентарь пуст</p>
         </div>
       </div>
     </div>
@@ -104,24 +123,24 @@
     let userBalance = 150;
 
     const casesData = [
-      { name: 'Bear', price: 149, icon: '🧸', limit: false },
-      { name: 'Play...', price: 199, icon: '🎧', limit: false },
-      { name: 'Skull', price: 249, icon: '💀', limit: false },
-      { name: 'Mood', price: 249, icon: '🎒', limit: false },
-      { name: 'Miracle', price: 249, icon: '🕌', limit: true },
-      { name: 'Lamp', price: 299, icon: '🧞', limit: false },
-      { name: 'Perfume', price: 399, icon: '🧪', limit: false },
-      { name: 'Lucky', price: 499, icon: '💖', limit: true },
-      { name: 'Papillon', price: 599, icon: '🌋', limit: false },
-      { name: 'Shadow', price: 999, icon: '💎', limit: false },
-      { name: 'Bangles', price: 999, icon: '💍', limit: false },
-      { name: 'Pack', price: 999, icon: '🎩', limit: false },
-      { name: 'Hero', price: 1499, icon: '🛡️', limit: false },
-      { name: 'Loot', price: 1999, icon: '👜', limit: false },
-      { name: 'Person', price: 2999, icon: '🧸', limit: false },
-      { name: 'Scooter', price: 4999, icon: '🏎️', limit: false },
-      { name: 'Inv...', price: 9999, icon: '📦', limit: false },
-      { name: 'Midas Gold', price: 14999, icon: '🍎', limit: false }
+      { name: 'Bear', price: 149, icon: '🧸' },
+      { name: 'Play...', price: 199, icon: '🎧' },
+      { name: 'Skull', price: 249, icon: '💀' },
+      { name: 'Mood', price: 249, icon: '🎒' },
+      { name: 'Miracle', price: 249, icon: '🕌' },
+      { name: 'Lamp', price: 299, icon: '🧞' },
+      { name: 'Perfume', price: 399, icon: '🧪' },
+      { name: 'Lucky', price: 499, icon: '💖' },
+      { name: 'Papillon', price: 599, icon: '🌋' },
+      { name: 'Shadow', price: 999, icon: '💎' },
+      { name: 'Bangles', price: 999, icon: '💍' },
+      { name: 'Pack', price: 999, icon: '🎩' },
+      { name: 'Hero', price: 1499, icon: '🛡️' },
+      { name: 'Loot', price: 1999, icon: '👜' },
+      { name: 'Person', price: 2999, icon: '🧸' },
+      { name: 'Scooter', price: 4999, icon: '🏎️' },
+      { name: 'Inv...', price: 9999, icon: '📦' },
+      { name: 'Midas Gold', price: 14999, icon: '🍎' }
     ];
 
     const drops = [
@@ -137,14 +156,33 @@
         const data = await res.json();
         userBalance = data.stars;
         document.getElementById('starsBalance').innerText = userBalance;
+        document.getElementById('profName').innerText = data.username || 'Игрок';
+        document.getElementById('profRole').innerText = data.role || 'Игрок';
         renderInventory(data.inventory);
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/leaderboard');
+        const data = await res.json();
+        const list = document.getElementById('leaderboardList');
+        list.innerHTML = data.map((u, i) => `
+          <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-2xl flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+              <span class="font-extrabold ${i === 0 ? 'text-amber-400' : 'text-slate-500'}">#${i + 1}</span>
+              <div class="font-bold text-white">${u.username || 'Игрок'}</div>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-md">${u.role || 'Игрок'}</span>
+            </div>
+            <div class="font-black text-amber-400">${u.stars} ⭐</div>
+          </div>
+        `).join('');
       } catch (e) { console.error(e); }
     }
 
     function renderCases() {
       document.getElementById('casesGrid').innerHTML = casesData.map(c => `
         <div class="glass-card rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800">
-          ${c.limit ? '<span class="bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full mb-1">Лимит</span>' : ''}
           <div class="text-4xl my-2">${c.icon}</div>
           <div class="font-extrabold text-sm mb-1 text-slate-200">${c.name}</div>
           <div class="text-xs font-bold text-amber-400 mb-3">⭐ ${c.price}</div>
@@ -160,15 +198,15 @@
         return;
       }
       list.innerHTML = inv.map(item => `
-        <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center gap-2">
-          <span class="text-2xl">${item.icon}</span>
+        <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2">
+          <span class="text-xl">${item.icon}</span>
           <span class="font-bold text-white truncate">${item.name}</span>
         </div>
       `).join('');
     }
 
     function switchTab(tab) {
-      ['cases', 'upgrade', 'profile'].forEach(t => {
+      ['cases', 'market', 'top', 'profile'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
         document.getElementById(`btn-${t}`).classList.remove('text-blue-400', 'border-blue-500/50');
         document.getElementById(`btn-${t}`).classList.add('text-slate-400');
@@ -176,6 +214,8 @@
       document.getElementById(`tab-${tab}`).classList.remove('hidden');
       document.getElementById(`btn-${tab}`).classList.add('text-blue-400', 'border-blue-500/50');
       document.getElementById(`btn-${tab}`).classList.remove('text-slate-400');
+
+      if (tab === 'top') loadLeaderboard();
     }
 
     async function openCase(name, price, icon) {
@@ -226,24 +266,6 @@
           resDiv.classList.remove('hidden');
         }, 5100);
 
-      } catch (e) { console.error(e); }
-    }
-
-    async function claimBonus() {
-      try {
-        const res = await fetch('/api/bonus', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ telegramId })
-        });
-        const data = await res.json();
-        if (!data.success) {
-          alert(data.message || 'Бонус уже был получен сегодня!');
-          return;
-        }
-        userBalance = data.stars;
-        document.getElementById('starsBalance').innerText = userBalance;
-        alert(`🎁 Успешно получено +${data.reward} ⭐!`);
       } catch (e) { console.error(e); }
     }
 
