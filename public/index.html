@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT DROP — Premium Casino & Upgrade</title>
+  <title>NFT DROP — Cases & Roulette</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #07090e; }
     .glass-card {
-      background: rgba(18, 24, 38, 0.75);
+      background: rgba(18, 24, 38, 0.85);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -17,123 +17,92 @@
     .roulette-track {
       display: flex; gap: 14px;
       transition: transform 5s cubic-bezier(0.12, 0.8, 0.15, 1);
-      will-change: transform;
     }
     .pointer {
       position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
       background: #3b82f6; z-index: 30; transform: translateX(-50%);
       box-shadow: 0 0 15px #3b82f6;
     }
-    .glow-gold { box-shadow: 0 0 25px rgba(245, 158, 11, 0.3); }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center pb-20 select-none">
 
   <!-- Header -->
-  <header class="w-full max-w-lg p-4 sticky top-0 z-50 glass-card border-b border-slate-800/80 mb-4">
+  <header class="w-full max-w-lg p-4 sticky top-0 z-50 glass-card border-b border-slate-800 mb-4">
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
         <span class="text-2xl">✨</span>
-        <span class="font-extrabold text-xl tracking-wide bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">NFT DROP</span>
+        <span class="font-extrabold text-xl bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">NFT DROP</span>
       </div>
-      <div class="flex items-center gap-3">
-        <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 font-bold text-amber-400 text-sm">
+      <div class="flex items-center gap-2">
+        <div class="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-2xl font-bold text-amber-400 text-sm">
           <span id="starsBalance">150</span> ⭐
-        </div>
-        <div class="bg-cyan-500/10 border border-cyan-500/30 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 font-bold text-cyan-400 text-sm">
-          <span id="tonBalance">0.00</span> TON
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
   <main class="w-full max-w-lg px-4 flex-1">
     
-    <!-- Roulette Showcase Banner -->
-    <div id="rouletteBlock" class="hidden glass-card rounded-3xl p-4 mb-6 border border-blue-500/20 glow-gold">
+    <!-- Roulette Arena -->
+    <div id="rouletteBlock" class="hidden glass-card rounded-3xl p-4 mb-6 border border-blue-500/30">
       <div class="text-center mb-3">
-        <h3 id="activeCaseTitle" class="font-extrabold text-lg text-indigo-300">Кейс</h3>
-        <p class="text-xs text-slate-400">Крутим рулетку редких предметов...</p>
+        <h3 id="activeCaseTitle" class="font-extrabold text-lg text-indigo-300">Открытие кейса</h3>
       </div>
-      <div class="roulette-container bg-slate-950/80 border border-slate-800 rounded-2xl p-2 h-36 flex items-center">
+      <div class="roulette-container bg-slate-950 border border-slate-800 rounded-2xl p-2 h-36 flex items-center">
         <div class="pointer"></div>
         <div id="track" class="roulette-track"></div>
       </div>
-      <div id="dropResult" class="hidden mt-3 p-3 bg-blue-950/60 border border-blue-500/50 rounded-2xl text-center font-bold text-blue-300 text-sm"></div>
+      <div id="dropResult" class="hidden mt-3 p-3 bg-blue-950/80 border border-blue-500 rounded-2xl text-center font-bold text-blue-300 text-sm"></div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Tabs -->
     <div class="grid grid-cols-3 gap-2 mb-6">
-      <button onclick="switchTab('cases')" class="glass-card py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 text-blue-400 border-blue-500/40">
-        📦 Кейсы
-      </button>
-      <button onclick="switchTab('upgrade')" class="glass-card py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
-        ⚡ Апгрейдер
-      </button>
-      <button onclick="switchTab('profile')" class="glass-card py-2.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
-        👤 Профиль
-      </button>
+      <button onclick="switchTab('cases')" id="btn-cases" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-blue-400 border-blue-500/50">📦 Кейсы</button>
+      <button onclick="switchTab('upgrade')" id="btn-upgrade" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-slate-400">⚡ Апгрейдер</button>
+      <button onclick="switchTab('profile')" id="btn-profile" class="glass-card py-2.5 rounded-2xl font-bold text-xs text-slate-400">👤 Профиль</button>
     </div>
 
-    <!-- TAB 1: CASES GRID -->
+    <!-- TAB 1: CASES -->
     <div id="tab-cases">
-      <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-        <span>🔥</span> Доступные кейсы
-      </h2>
       <div id="casesGrid" class="grid grid-cols-2 gap-3.5"></div>
     </div>
 
-    <!-- TAB 2: UPGRADER -->
+    <!-- TAB 2: UPGRADE -->
     <div id="tab-upgrade" class="hidden">
-      <div class="glass-card rounded-3xl p-6 text-center border border-indigo-500/20">
+      <div class="glass-card rounded-3xl p-6 text-center">
         <h2 class="text-xl font-extrabold mb-2 text-indigo-300">⚡ NFT Upgrader</h2>
-        <p class="text-xs text-slate-400 mb-6">Повышай ценность своего NFT с шансом от 70% до 0.01%!</p>
-        
-        <div class="relative w-44 h-44 mx-auto mb-6 flex items-center justify-center rounded-full border-4 border-indigo-500/30 bg-slate-900/50">
-          <div class="text-center">
-            <span class="text-3xl">🔮</span>
-            <div class="text-xs text-slate-400 mt-1">Шанс успеха</div>
-            <div class="text-xl font-black text-emerald-400">45%</div>
-          </div>
+        <p class="text-xs text-slate-400 mb-6">Повышай ценность своего NFT с шансом до 70%!</p>
+        <div class="w-36 h-36 mx-auto mb-6 flex items-center justify-center rounded-full border-4 border-indigo-500/30 bg-slate-900">
+          <span class="text-3xl">🔮</span>
         </div>
-
-        <button onclick="alert('Выберите предмет из своего инвентаря для апгрейда!')" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 py-3.5 rounded-2xl font-extrabold text-sm shadow-lg shadow-indigo-600/30">
-          Начать Апгрейд
-        </button>
+        <button onclick="alert('Выберите предмет из инвентаря в профиле!')" class="w-full bg-indigo-600 py-3.5 rounded-2xl font-extrabold text-sm">Начать апгрейд</button>
       </div>
     </div>
 
-    <!-- TAB 3: PROFILE -->
+    <!-- TAB 3: PROFILE & INVENTORY -->
     <div id="tab-profile" class="hidden">
-      <div class="glass-card rounded-3xl p-6 mb-4">
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-bold">
-            👤
-          </div>
-          <div>
-            <h3 class="font-extrabold text-base">Telegram User</h3>
-            <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/20">Игрок</span>
-          </div>
-        </div>
-        
-        <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800 text-xs mb-4">
-          <div class="text-slate-400 mb-1">Промокод:</div>
-          <div class="flex gap-2">
-            <input type="text" placeholder="Введите промокод..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 flex-1 text-white focus:outline-none focus:border-blue-500">
-            <button onclick="alert('Промокод активирован!')" class="bg-blue-600 px-4 py-2 rounded-xl font-bold">ОК</button>
-          </div>
-        </div>
-
-        <button onclick="alert('Ежедневный бонус +50 ⭐ получен!')" class="w-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold py-3 rounded-2xl text-xs">
-          🎁 Забрать ежедневный бонус (+10-100 ⭐)
+      <div class="glass-card rounded-3xl p-5 mb-4">
+        <h3 class="font-extrabold text-base mb-3">🎁 Ежедневный бонус</h3>
+        <button onclick="claimBonus()" class="w-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold py-3 rounded-2xl text-xs mb-4">
+          Забрать бонус (+10 до 100 ⭐)
         </button>
+      </div>
+
+      <div class="glass-card rounded-3xl p-5">
+        <h3 class="font-extrabold text-base mb-3">🎒 Ваш инвентарь NFT</h3>
+        <div id="inventoryList" class="grid grid-cols-2 gap-2 text-xs text-slate-400">
+          <p>Инвентарь пока пуст. Открывайте кейсы!</p>
+        </div>
       </div>
     </div>
 
   </main>
 
   <script>
+    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 12345678;
+    let userBalance = 150;
+
     const casesData = [
       { name: 'Bear', price: 149, icon: '🧸', limit: false },
       { name: 'Play...', price: 199, icon: '🎧', limit: false },
@@ -142,7 +111,6 @@
       { name: 'Miracle', price: 249, icon: '🕌', limit: true },
       { name: 'Lamp', price: 299, icon: '🧞', limit: false },
       { name: 'Perfume', price: 399, icon: '🧪', limit: false },
-      { name: 'Lamp Special', price: 399, icon: '🎃', limit: true },
       { name: 'Lucky', price: 499, icon: '💖', limit: true },
       { name: 'Papillon', price: 599, icon: '🌋', limit: false },
       { name: 'Shadow', price: 999, icon: '💎', limit: false },
@@ -163,21 +131,38 @@
       { name: 'Legendary Dragon', icon: '🐉', color: 'from-amber-500 to-orange-700' }
     ];
 
-    let userBalance = 150;
+    async function loadUser() {
+      try {
+        const res = await fetch(`/api/user/${telegramId}`);
+        const data = await res.json();
+        userBalance = data.stars;
+        document.getElementById('starsBalance').innerText = userBalance;
+        renderInventory(data.inventory);
+      } catch (e) { console.error(e); }
+    }
 
     function renderCases() {
-      const grid = document.getElementById('casesGrid');
-      grid.innerHTML = casesData.map(c => `
-        <div class="glass-card rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800 hover:border-blue-500/40 transition-all">
-          ${c.limit ? `<span class="bg-blue-600 text-[10px] font-black px-2.5 py-0.5 rounded-full mb-1">Лимит</span>` : ''}
+      document.getElementById('casesGrid').innerHTML = casesData.map(c => `
+        <div class="glass-card rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800">
+          ${c.limit ? '<span class="bg-blue-600 text-[10px] font-black px-2 py-0.5 rounded-full mb-1">Лимит</span>' : ''}
           <div class="text-4xl my-2">${c.icon}</div>
           <div class="font-extrabold text-sm mb-1 text-slate-200">${c.name}</div>
-          <div class="text-xs font-bold text-amber-400 mb-3 flex items-center gap-1">
-            <span>⭐</span> ${c.price}
-          </div>
-          <button onclick="openCase('${c.name}', ${c.price})" class="w-full bg-blue-600/80 hover:bg-blue-600 text-white font-extrabold py-2 rounded-xl text-xs shadow-md active:scale-95 transition-all">
-            Открыть
-          </button>
+          <div class="text-xs font-bold text-amber-400 mb-3">⭐ ${c.price}</div>
+          <button onclick="openCase('${c.name}', ${c.price}, '${c.icon}')" class="w-full bg-blue-600 text-white font-extrabold py-2 rounded-xl text-xs">Открыть</button>
+        </div>
+      `).join('');
+    }
+
+    function renderInventory(inv) {
+      const list = document.getElementById('inventoryList');
+      if (!inv || inv.length === 0) {
+        list.innerHTML = '<p class="text-slate-500 col-span-2">Инвентарь пуст</p>';
+        return;
+      }
+      list.innerHTML = inv.map(item => `
+        <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center gap-2">
+          <span class="text-2xl">${item.icon}</span>
+          <span class="font-bold text-white truncate">${item.name}</span>
         </div>
       `).join('');
     }
@@ -185,52 +170,85 @@
     function switchTab(tab) {
       ['cases', 'upgrade', 'profile'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`btn-${t}`).classList.remove('text-blue-400', 'border-blue-500/50');
+        document.getElementById(`btn-${t}`).classList.add('text-slate-400');
       });
       document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      document.getElementById(`btn-${tab}`).classList.add('text-blue-400', 'border-blue-500/50');
+      document.getElementById(`btn-${tab}`).classList.remove('text-slate-400');
     }
 
-    function openCase(name, price) {
+    async function openCase(name, price, icon) {
       if (userBalance < price) {
-        alert('Недостаточно звёзд на балансе!');
+        alert('Недостаточно звезд на балансе!');
         return;
       }
 
-      userBalance -= price;
-      document.getElementById('starsBalance').innerText = userBalance;
+      const winItem = drops[Math.floor(Math.random() * drops.length)];
 
-      const block = document.getElementById('rouletteBlock');
-      const track = document.getElementById('track');
-      const res = document.getElementById('dropResult');
+      try {
+        const res = await fetch('/api/open-case', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramId, price, rewardName: winItem.name, rewardIcon: winItem.icon })
+        });
+        const data = await res.json();
+        if (!data.success) { alert(data.message); return; }
+        
+        userBalance = data.stars;
+        document.getElementById('starsBalance').innerText = userBalance;
+        renderInventory(data.inventory);
 
-      block.classList.remove('hidden');
-      res.classList.add('hidden');
-      document.getElementById('activeCaseTitle').innerText = `Открываем: ${name}`;
+        const block = document.getElementById('rouletteBlock');
+        const track = document.getElementById('track');
+        const resDiv = document.getElementById('dropResult');
 
-      track.innerHTML = '';
-      for (let i = 0; i < 50; i++) {
-        const item = drops[Math.floor(Math.random() * drops.length)];
-        const card = document.createElement('div');
-        card.className = `w-28 h-28 flex-shrink-0 bg-gradient-to-b ${item.color} rounded-2xl flex flex-col items-center justify-center border border-white/10 shadow-md`;
-        card.innerHTML = `<span class="text-3xl mb-1">${item.icon}</span><span class="text-[10px] font-bold text-center px-1 truncate w-full">${item.name}</span>`;
-        track.appendChild(card);
-      }
-      
-      track.style.transform = 'translateX(0px)';
+        block.classList.remove('hidden');
+        resDiv.classList.add('hidden');
+        document.getElementById('activeCaseTitle').innerText = `Открываем: ${name}`;
 
-      setTimeout(() => {
-        const winIndex = 32 + Math.floor(Math.random() * 8);
-        const cardWidth = 126;
-        track.style.transform = `translateX(-${winIndex * cardWidth - 140}px)`;
-      }, 100);
+        track.innerHTML = '';
+        for (let i = 0; i < 40; i++) {
+          const item = drops[Math.floor(Math.random() * drops.length)];
+          const card = document.createElement('div');
+          card.className = `w-28 h-28 flex-shrink-0 bg-gradient-to-b ${item.color} rounded-2xl flex flex-col items-center justify-center border border-white/10`;
+          card.innerHTML = `<span class="text-3xl mb-1">${item.icon}</span><span class="text-[10px] font-bold text-center px-1 truncate w-full">${item.name}</span>`;
+          track.appendChild(card);
+        }
 
-      setTimeout(() => {
-        const win = drops[Math.floor(Math.random() * drops.length)];
-        res.innerHTML = `🎉 Вы выбили: <span class="text-amber-300 font-black">${win.icon} ${win.name}</span>!`;
-        res.classList.remove('hidden');
-      }, 5100);
+        track.style.transform = 'translateX(0px)';
+        setTimeout(() => {
+          track.style.transform = `translateX(-${25 * 126}px)`;
+        }, 50);
+
+        setTimeout(() => {
+          resDiv.innerHTML = `🎉 Вы выиграли: <span class="text-amber-300 font-black">${winItem.icon} ${winItem.name}</span>!`;
+          resDiv.classList.remove('hidden');
+        }, 5100);
+
+      } catch (e) { console.error(e); }
+    }
+
+    async function claimBonus() {
+      try {
+        const res = await fetch('/api/bonus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramId })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          alert(data.message || 'Бонус уже был получен сегодня!');
+          return;
+        }
+        userBalance = data.stars;
+        document.getElementById('starsBalance').innerText = userBalance;
+        alert(`🎁 Успешно получено +${data.reward} ⭐!`);
+      } catch (e) { console.error(e); }
     }
 
     renderCases();
+    loadUser();
   </script>
 </body>
 </html>
