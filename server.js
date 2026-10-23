@@ -41,7 +41,7 @@ const MarketItem = mongoose.model('MarketItem', marketSchema);
 app.get('/api/user/:id', async (req, res) => {
   try {
     let tid = Number(req.params.id);
-    if (!tid || isNaN(tid)) tid = 123456;
+    if (!tid || isNaN(tid) || tid === 0) tid = 777777;
     let user = await User.findOne({ telegramId: tid });
     if (!user) {
       user = await User.create({ telegramId: tid, username: 'Player_' + tid, stars: 150 });
@@ -101,7 +101,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Telegram Бот и две панели админки
+// Telegram Бот с раздельными панелями
 const botToken = process.env.BOT_TOKEN;
 if (botToken) {
   const bot = new Telegraf(botToken);
