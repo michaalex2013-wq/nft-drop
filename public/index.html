@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFT Drop & Case Roulette</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="max-w-md w-full bg-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700 text-center">
+    <h1 class="text-3xl font-extrabold text-indigo-400 mb-2">🎰 NFT Case Drop</h1>
+    <p class="text-slate-400 mb-6">Открывай кейсы и выигрывай редкие NFT!</p>
+    
+    <div id="balance" class="bg-slate-700/50 p-3 rounded-xl mb-6 flex justify-between items-center">
+      <span class="text-slate-300">Баланс:</span>
+      <span class="text-xl font-bold text-yellow-400">100 ⭐</span>
+    </div>
+
+    <div class="border-4 border-dashed border-slate-600 rounded-xl p-8 mb-6 bg-slate-900/50">
+      <div class="text-6xl mb-2">📦</div>
+      <p class="text-lg font-semibold">Премиум NFT Кейс</p>
+      <p class="text-sm text-slate-400 mb-4">Цена: 50 ⭐</p>
+      <button onclick="openCase()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg active:scale-95">
+        Открыть кейс
+      </button>
+    </div>
+
+    <div id="result" class="hidden p-4 bg-emerald-900/40 border border-emerald-500 rounded-xl text-emerald-300 font-bold">
+    </div>
+  </div>
+
+  <script>
+    function openCase() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('hidden');
+      resultDiv.innerHTML = 'Крутим рулетку... 🎰';
+      
+      setTimeout(() => {
+        const items = ['🔥 Rare NFT #042', '💎 Legendary Crystal NFT', '🪙 200 ⭐ Bonus', '⚡ Epic Pass'];
+        const win = items[Math.floor(Math.random() * items.length)];
+        resultDiv.innerHTML = 'Выиграно: ' + win;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

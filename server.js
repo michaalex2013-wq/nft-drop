@@ -9,6 +9,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Главная страница
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Подключение к MongoDB
 const mongoUri = process.env.MONGO_URI;
 if (mongoUri) {
@@ -21,9 +26,7 @@ if (mongoUri) {
 const userSchema = new mongoose.Schema({
   telegramId: { type: Number, required: true, unique: true },
   username: String,
-  stars: { type: Number, default: 100 },
-  inventory: Array,
-  history: Array
+  stars: { type: Number, default: 100 }
 });
 const User = mongoose.model('User', userSchema);
 
@@ -45,7 +48,7 @@ if (botToken) {
       ctx.reply(
         `Привет, ${ctx.from.first_name}! Добро пожаловать в NFT Drop Roulette 🎰\n\nТвой баланс: ${user.stars} ⭐`,
         Markup.inlineKeyboard([
-          [Markup.button.webApp('Кейсы и Рулетка 🚀', process.env.RENDER_EXTERNAL_URL || 'https://nft-drop-app.onrender.com')]
+          [Markup.button.webApp('Кейсы и Рулетка 🚀', process.env.RENDER_EXTERNAL_URL || 'https://nft-drop-4d89.onrender.com')]
         ])
       );
     } catch (e) {
@@ -55,22 +58,15 @@ if (botToken) {
   });
 
   bot.launch().then(() => {
-    console.log('Telegram Bot successfully launched!');
+    console.log('Telegram Bot launched!');
   }).catch(err => {
     console.error('Bot launch error:', err);
   });
 
-  // Безопасное завершение
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
 
-// Простой API маршрут для проверки работы
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date() });
-});
-
-// Запуск HTTP веб-сервера
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
