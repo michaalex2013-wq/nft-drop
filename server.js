@@ -13,16 +13,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 const mongoUri = process.env.MONGO_URI;
 if (mongoUri) {
   mongoose.connect(mongoUri)
-    .then(() => console.log('[DB] MongoDB Connected Successfully'))
-    .catch(err => console.error('[DB] Connection Error:', err));
+    .then(() => console.log('[DB] Connected'))
+    .catch(err => console.error('[DB] Error:', err));
 }
 
 // Schemas
 const userSchema = new mongoose.Schema({
   telegramId: { type: Number, required: true, unique: true },
-  username: { type: String, default: 'Игрок' },
+  username: { type: String, default: 'Player' },
   stars: { type: Number, default: 150 },
-  tonBalance: { type: Number, default: 0 },
   role: { type: String, default: 'Игрок' },
   inventory: { type: Array, default: [] },
   createdAt: { type: Date, default: Date.now }
@@ -38,12 +37,14 @@ const marketSchema = new mongoose.Schema({
 });
 const MarketItem = mongoose.model('MarketItem', marketSchema);
 
-// REST API Endpoints
+// API Endpoints
 app.get('/api/user/:id', async (req, res) => {
   try {
-    let user = await User.findOne({ telegramId: req.params.id });
+    let tid = Number(req.params.id);
+    if (!tid || isNaN(tid)) tid = 999999; // Защита от undefined
+    let user = await User.findOne({ telegramId: tid });
     if (!user) {
-      user = await User.create({ telegramId: req.params.id, stars: 150 });
+      user = await User.create({ telegramId: tid, username: 'Player_' + tid, stars: 150 });
     }
     res.json(user);
   } catch (e) {
@@ -88,7 +89,7 @@ app.get('/api/market', async (req, res) => {
 app.post('/api/market/add', async (req, res) => {
   const { sellerName, itemName, itemImage, priceTon } = req.body;
   try {
-    await MarketItem.create({ sellerName, itemName, itemImage, priceTon });
+    await MarketItem.create({ sellerName, itemName, itemImage: itemImage || '🖼️', priceTon });
     const items = await MarketItem.find().sort({ createdAt: -1 });
     res.json({ success: true, items });
   } catch (e) {
@@ -100,7 +101,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Telegram Bot Framework
+// Telegram Bot
 const botToken = process.env.BOT_TOKEN;
 if (botToken) {
   const bot = new Telegraf(botToken);
@@ -113,72 +114,79 @@ if (botToken) {
       await User.create({ telegramId: id, username: ctx.from.username || 'Player', stars: 150 });
     }
     ctx.reply(
-      `💎 **NFT Drop — Premium Service**\n\nДобро пожаловать, ${ctx.from.first_name}!\nБаланс: **150 ⭐**`,
+      `💎 **NFT Drop Service**\n\nПривет, ${ctx.from.first_name}!\nТвой баланс: **150 ⭐**`,
       {
         parse_mode: 'Markdown',
         ...Markup.keyboard([
           [Markup.button.webApp('🚀 Открыть NFT Drop WebApp', getAppUrl())],
-          ['🔑 Авторизация в Системе']
+          ['🔑 Авторизация (Админ / Спонсор)']
         ]).resize()
       }
     );
   });
 
+  // Панель Спонсора
   bot.hears('/auth Guy67pidoras', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Спонсор' });
-    ctx.reply('💼 **Панель Спонсора активирована!**', {
+    ctx.reply('💼 **Панель Спонсора активна!** Доступна выдача звёзд и управление.', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
-        ['🎁 Выдать +500 ⭐', '🏷️ Назначить статус Спонсора'],
-        ['🚀 Открыть NFT Drop WebApp']
+        ['🎁 Выдать +500 ⭐', '🚀 Открыть WebApp']
       ]).resize()
     });
   });
 
+  // Панель Создателя
   bot.hears('/auth 3861!+*@^Shwkw18#', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Владелец' });
-    ctx.reply('👑 **Панель Создателя активирована!**', {
+    ctx.reply('👑 **Панель Создателя (FULL ADMIN) активна!**', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
-        ['👥 Всего пользователей', '🟢 Сервер статус'],
-        ['🎁 Выдать +1000 ⭐', '🔄 Сброс базы (Вайп)'],
-        ['🚀 Открыть NFT Drop WebApp']
+        ['👥 Пользователи', '🟢 Статус сервера'],
+        ['🎁 Выдать +1000 ⭐', '🔄 Глобальный Вайп'],
+        ['🚀 Открыть WebApp']
       ]).resize()
     });
   });
 
-  bot.hears('👥 Всего пользователей', async (ctx) => {
+  bot.hears('👥 Пользователи', async (ctx) => {
     const count = await User.countDocuments();
-    ctx.reply(`📊 Всего зарегистрированных игроков: ${count}`);
+    ctx.reply(`📊 Игроков в базе: ${count}`);
   });
 
-  bot.hears('🟢 Сервер статус', (ctx) => {
-    ctx.reply('🟢 Сервер и система работают в стабильном режиме 24/7.');
+  bot.hears('🟢 Статус сервера', async (ctx) => {
+    ctx.reply('🟢 Сервер работает 24/7.');
   });
 
   bot.hears('🎁 Выдать +500 ⭐', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { $inc: { stars: 500 } });
-    ctx.reply('🎁 Баланс пополнен на +500 ⭐');
+    ctx.reply('🎁 Начислено +500 ⭐!');
   });
 
   bot.hears('🎁 Выдать +1000 ⭐', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { $inc: { stars: 1000 } });
-    ctx.reply('🎁 Баланс пополнен на +1000 ⭐');
+    ctx.reply('🎁 Начислено +1000 ⭐!');
   });
 
-  bot.hears('🔄 Сброс базы (Вайп)', async (ctx) => {
+  bot.hears('🔄 Глобальный Вайп', async (ctx) => {
     await User.updateMany({}, { stars: 150, inventory: [] });
-    ctx.reply('⚠️ База данных успешно сброшена!');
+    ctx.reply('⚠️ База данных сброшена!');
   });
 
-  bot.hears('🔑 Авторизация в Системе', (ctx) => {
-    ctx.reply('Введите ваш ключ доступа:\n`/auth пароль`', { parse_mode: 'Markdown' });
+  bot.hears('🔑 Авторизация (Админ / Спонсор)', (ctx) => {
+    ctx.reply('Введите команду авторизации:\n`/auth ваш_пароль`', { parse_mode: 'Markdown' });
   });
 
-  bot.launch().then(() => console.log('[BOT] Telegraf Bot Active')).catch(console.error);
+  bot.hears('🚀 Открыть WebApp', (ctx) => {
+    ctx.reply('Нажмите кнопку ниже:', Markup.keyboard([
+      [Markup.button.webApp('🚀 Открыть NFT Drop WebApp', getAppUrl())]
+    ]).resize());
+  });
+
+  bot.launch().then(() => console.log('Bot started')).catch(console.error);
 
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
 
-app.listen(PORT, () => console.log(`[SERVER] App running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server on port ${PORT}`));

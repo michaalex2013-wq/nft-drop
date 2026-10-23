@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT DROP — Luxury Case Roulette</title>
+  <title>NFT DROP — Premium Roulette</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #07090e; }
     .glass-panel {
-      background: rgba(18, 24, 38, 0.75);
+      background: rgba(18, 24, 38, 0.85);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -20,19 +20,18 @@
       background: #6366f1; z-index: 30; transform: translateX(-50%);
       box-shadow: 0 0 20px #6366f1;
     }
-    .glow-effect { box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col items-center pb-20 select-none">
 
-  <!-- Main Header -->
+  <!-- Header -->
   <header class="w-full max-w-lg p-4 sticky top-0 z-50 glass-panel border-b border-slate-800/80 mb-4">
     <div class="flex justify-between items-center">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center font-black text-sm shadow-lg shadow-indigo-500/30">N</div>
-        <span class="font-extrabold text-lg tracking-wide bg-gradient-to-r from-indigo-300 to-slate-100 bg-clip-text text-transparent">NFT DROP</span>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-sm shadow-md shadow-indigo-600/30">N</div>
+        <span class="font-extrabold text-lg bg-gradient-to-r from-indigo-300 to-slate-100 bg-clip-text text-transparent">NFT DROP</span>
       </div>
-      <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-2xl font-bold text-amber-400 text-sm flex items-center gap-1.5 shadow-inner">
+      <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-2xl font-bold text-amber-400 text-sm flex items-center gap-1">
         <span id="starsBalance">150</span> ⭐
       </div>
     </div>
@@ -40,24 +39,24 @@
 
   <main class="w-full max-w-lg px-4 flex-1">
     
-    <!-- Roulette Modal Banner -->
-    <div id="rouletteBlock" class="hidden glass-panel rounded-3xl p-4 mb-6 border border-indigo-500/30 glow-effect">
+    <!-- Roulette Modal -->
+    <div id="rouletteBlock" class="hidden glass-panel rounded-3xl p-4 mb-6 border border-indigo-500/30">
       <div class="text-center mb-3">
         <h3 id="activeCaseTitle" class="font-extrabold text-base text-indigo-300">Открытие кейса</h3>
       </div>
-      <div class="roulette-container bg-slate-950/90 border border-slate-800/80 rounded-2xl p-2 h-36 flex items-center">
+      <div class="roulette-container bg-slate-950 border border-slate-800 rounded-2xl p-2 h-36 flex items-center">
         <div class="pointer"></div>
         <div id="track" class="roulette-track"></div>
       </div>
       <div id="dropResult" class="hidden mt-3 p-3 bg-indigo-950/80 border border-indigo-500/50 rounded-2xl text-center font-bold text-indigo-200 text-sm"></div>
     </div>
 
-    <!-- Navigation Bar -->
-    <div class="grid grid-cols-4 gap-2 mb-6">
-      <button onclick="switchTab('cases')" id="btn-cases" class="glass-panel py-3 rounded-2xl font-extrabold text-xs text-indigo-400 border-indigo-500/40 shadow-sm">📦 Кейсы</button>
-      <button onclick="switchTab('market')" id="btn-market" class="glass-panel py-3 rounded-2xl font-bold text-xs text-slate-400 hover:text-white">💎 Маркет</button>
-      <button onclick="switchTab('top')" id="btn-top" class="glass-panel py-3 rounded-2xl font-bold text-xs text-slate-400 hover:text-white">🏆 Лидеры</button>
-      <button onclick="switchTab('profile')" id="btn-profile" class="glass-panel py-3 rounded-2xl font-bold text-xs text-slate-400 hover:text-white">👤 Профиль</button>
+    <!-- Navigation -->
+    <div class="grid grid-cols-4 gap-1.5 mb-6">
+      <button onclick="switchTab('cases')" id="btn-cases" class="glass-panel py-3 rounded-2xl font-extrabold text-[11px] text-indigo-400 border-indigo-500/40">📦 Кейсы</button>
+      <button onclick="switchTab('market')" id="btn-market" class="glass-panel py-3 rounded-2xl font-bold text-[11px] text-slate-400 hover:text-white">💎 Маркет</button>
+      <button onclick="switchTab('top')" id="btn-top" class="glass-panel py-3 rounded-2xl font-bold text-[11px] text-slate-400 hover:text-white">🏆 Лидеры</button>
+      <button onclick="switchTab('profile')" id="btn-profile" class="glass-panel py-3 rounded-2xl font-bold text-[11px] text-slate-400 hover:text-white">👤 Профиль</button>
     </div>
 
     <!-- TAB 1: CASES -->
@@ -65,20 +64,20 @@
       <div id="casesGrid" class="grid grid-cols-2 gap-3.5"></div>
     </div>
 
-    <!-- TAB 2: FRAGMENT MARKET -->
+    <!-- TAB 2: MARKET -->
     <div id="tab-market" class="hidden">
       <div class="glass-panel rounded-3xl p-5 border border-indigo-500/20 mb-4">
         <h2 class="text-base font-extrabold mb-1 text-indigo-300">💎 Fragment P2P Market</h2>
-        <p class="text-xs text-slate-400 mb-4">Выставляйте свои NFT предметы за TON</p>
+        <p class="text-xs text-slate-400 mb-4">Выставляйте свои NFT на продажу за TON</p>
         
-        <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 mb-4 space-y-2">
-          <input type="text" id="nftNameInput" placeholder="Название предмета..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-          <input type="number" id="nftPriceInput" placeholder="Цена в TON..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-          <button onclick="listNftOnMarket()" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-extrabold py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition-all">Выставить предмет</button>
+        <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 mb-4 space-y-2">
+          <input type="text" id="nftNameInput" placeholder="Название NFT..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+          <input type="number" id="nftPriceInput" placeholder="Цена в TON..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+          <button onclick="listNftOnMarket()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-2.5 rounded-xl text-xs">Выставить на продажу</button>
         </div>
 
         <div id="marketList" class="space-y-2 text-xs">
-          <p class="text-slate-500">Загрузка рынка...</p>
+          <p class="text-slate-500">Загрузка маркета...</p>
         </div>
       </div>
     </div>
@@ -97,7 +96,7 @@
     <div id="tab-profile" class="hidden">
       <div class="glass-panel rounded-3xl p-5 mb-4">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold shadow-md shadow-indigo-600/30">👤</div>
+          <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold">👤</div>
           <div>
             <h3 class="font-extrabold text-sm" id="profName">Игрок</h3>
             <span id="profRole" class="text-[10px] font-black bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-lg">Игрок</span>
@@ -108,7 +107,7 @@
       <div class="glass-panel rounded-3xl p-5">
         <h3 class="font-extrabold text-sm mb-3">🎒 Инвентарь NFT</h3>
         <div id="inventoryList" class="grid grid-cols-2 gap-2 text-xs">
-          <p class="text-slate-500 col-span-2">Инвентарь пока пуст</p>
+          <p class="text-slate-500 col-span-2">Инвентарь пуст</p>
         </div>
       </div>
     </div>
@@ -116,8 +115,9 @@
   </main>
 
   <script>
-    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 987654321;
-    const username = window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'Player';
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const telegramId = tgUser?.id || Math.floor(Math.random() * 899999 + 100000);
+    const username = tgUser?.username || 'Player_' + telegramId;
     let userBalance = 150;
 
     const casesData = [
@@ -165,19 +165,19 @@
         const items = await res.json();
         const list = document.getElementById('marketList');
         if (items.length === 0) {
-          list.innerHTML = '<p class="text-slate-500">На маркете пока нет доступных лотов</p>';
+          list.innerHTML = '<p class="text-slate-500 text-xs">На маркете пока нет лотов</p>';
           return;
         }
         list.innerHTML = items.map(item => `
           <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold">🖼️</div>
+              <span class="text-xl">🖼️</span>
               <div>
-                <div class="font-bold text-white">${item.itemName}</div>
+                <div class="font-bold text-white text-xs">${item.itemName}</div>
                 <div class="text-[10px] text-slate-500">Продавец: @${item.sellerName}</div>
               </div>
             </div>
-            <button onclick="alert('Для покупки подключите TON кошелек!')" class="bg-cyan-600 hover:bg-cyan-500 px-3 py-1.5 rounded-xl font-bold text-white">${item.priceTon} TON</button>
+            <button onclick="alert('Для покупки подключите TON кошелек!')" class="bg-cyan-600 hover:bg-cyan-500 px-3 py-1.5 rounded-xl font-bold text-white text-xs">${item.priceTon} TON</button>
           </div>
         `).join('');
       } catch (e) { console.error(e); }
@@ -198,7 +198,7 @@
         });
         const data = await res.json();
         if (data.success) {
-          alert('Лот высталвен на Fragment!');
+          alert('Лот успешно выставлен на Fragment!');
           document.getElementById('nftNameInput').value = '';
           document.getElementById('nftPriceInput').value = '';
           loadMarket();
@@ -212,7 +212,7 @@
         const data = await res.json();
         const list = document.getElementById('leaderboardList');
         list.innerHTML = data.map((u, i) => `
-          <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl flex justify-between items-center">
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center">
             <div class="flex items-center gap-3">
               <span class="font-extrabold text-xs ${i === 0 ? 'text-amber-400' : 'text-slate-500'}">#${i + 1}</span>
               <div class="font-bold text-white text-xs">${u.username || 'Игрок'}</div>
@@ -226,11 +226,11 @@
 
     function renderCases() {
       document.getElementById('casesGrid').innerHTML = casesData.map(c => `
-        <div class="glass-panel rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800/80 hover:border-indigo-500/40 transition-all">
+        <div class="glass-panel rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800 hover:border-indigo-500/40 transition-all">
           <img src="${c.img}" class="w-14 h-14 object-contain my-2 drop-shadow-md" alt="case">
           <div class="font-extrabold text-xs mb-1 text-slate-200">${c.name}</div>
-          <div class="text-xs font-extrabold text-amber-400 mb-3">⭐ ${c.price}</div>
-          <button onclick="openCase('${c.name}', ${c.price}, '${c.img}')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-2 rounded-xl text-xs shadow-md shadow-indigo-600/20 active:scale-95 transition-all">Открыть</button>
+          <div class="text-xs font-bold text-amber-400 mb-3">⭐ ${c.price}</div>
+          <button onclick="openCase('${c.name}', ${c.price}, '${c.img}')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-2 rounded-xl text-xs shadow-md">Открыть</button>
         </div>
       `).join('');
     }
@@ -296,7 +296,7 @@
         for (let i = 0; i < 40; i++) {
           const item = drops[Math.floor(Math.random() * drops.length)];
           const card = document.createElement('div');
-          card.className = `w-28 h-28 flex-shrink-0 bg-gradient-to-b ${item.color} rounded-2xl flex flex-col items-center justify-center border border-white/10 shadow-lg`;
+          card.className = `w-28 h-28 flex-shrink-0 bg-gradient-to-b ${item.color} rounded-2xl flex flex-col items-center justify-center border border-white/10`;
           card.innerHTML = `<img src="${item.img}" class="w-10 h-10 object-contain mb-1"><span class="text-[10px] font-bold text-center px-1 truncate w-full">${item.name}</span>`;
           track.appendChild(card);
         }
@@ -307,7 +307,7 @@
         }, 50);
 
         setTimeout(() => {
-          resDiv.innerHTML = `🎉 Вы выбили: <span class="text-amber-300 font-black">${winItem.name}</span>!`;
+          resDiv.innerHTML = `🎉 Вы выиграли: <span class="text-amber-300 font-black">${winItem.name}</span>!`;
           resDiv.classList.remove('hidden');
         }, 5100);
 
