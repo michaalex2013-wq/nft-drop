@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT DROP — Cases, Market & Top</title>
+  <title>NFT DROP — Cases & Fragment</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -68,20 +68,18 @@
 
     <!-- TAB 2: FRAGMENT MARKET -->
     <div id="tab-market" class="hidden">
-      <div class="glass-card rounded-3xl p-5 border border-indigo-500/20">
-        <h2 class="text-lg font-extrabold mb-1 text-indigo-300 flex items-center gap-2">💎 Fragment P2P Market</h2>
-        <p class="text-xs text-slate-400 mb-4">Покупайте и продавайте NFT за TON (1 TON = 100 ⭐)</p>
+      <div class="glass-card rounded-3xl p-5 border border-indigo-500/20 mb-4">
+        <h2 class="text-lg font-extrabold mb-1 text-indigo-300">💎 Fragment P2P Market</h2>
+        <p class="text-xs text-slate-400 mb-4">Выставляйте свои NFT на продажу за TON (1 TON = 100 ⭐)</p>
+        
+        <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 mb-4">
+          <input type="text" id="nftNameInput" placeholder="Название NFT..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs mb-2 text-white focus:outline-none">
+          <input type="number" id="nftPriceInput" placeholder="Цена в TON..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs mb-3 text-white focus:outline-none">
+          <button onclick="listNftOnMarket()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold py-2.5 rounded-xl text-xs">Выставить на продажу</button>
+        </div>
+
         <div id="marketList" class="space-y-2 text-xs">
-          <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">👑</span>
-              <div>
-                <div class="font-bold text-white">Legendary Crown</div>
-                <div class="text-[10px] text-slate-500">Продавец: @crypto_king</div>
-              </div>
-            </div>
-            <button onclick="alert('Для покупки требуется подключение TON кошелька!')" class="bg-cyan-600 px-3 py-1.5 rounded-xl font-bold text-white">2.5 TON</button>
-          </div>
+          <p class="text-slate-500">Загрузка маркета...</p>
         </div>
       </div>
     </div>
@@ -89,7 +87,7 @@
     <!-- TAB 3: TOP LEADERBOARD -->
     <div id="tab-top" class="hidden">
       <div class="glass-card rounded-3xl p-5 border border-amber-500/20">
-        <h2 class="text-lg font-extrabold mb-4 text-amber-400 flex items-center gap-2">🏆 Топ Богатейших Игроков</h2>
+        <h2 class="text-lg font-extrabold mb-4 text-amber-400">🏆 Топ Богатейших Игроков</h2>
         <div id="leaderboardList" class="space-y-2 text-xs">
           <p class="text-slate-500">Загрузка лидеров...</p>
         </div>
@@ -119,28 +117,29 @@
   </main>
 
   <script>
-    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 12345678;
+    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 900000 + 100000);
+    const username = window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'Player';
     let userBalance = 150;
 
     const casesData = [
-      { name: 'Bear', price: 149, icon: '🧸' },
-      { name: 'Play...', price: 199, icon: '🎧' },
-      { name: 'Skull', price: 249, icon: '💀' },
-      { name: 'Mood', price: 249, icon: '🎒' },
-      { name: 'Miracle', price: 249, icon: '🕌' },
-      { name: 'Lamp', price: 299, icon: '🧞' },
-      { name: 'Perfume', price: 399, icon: '🧪' },
-      { name: 'Lucky', price: 499, icon: '💖' },
-      { name: 'Papillon', price: 599, icon: '🌋' },
-      { name: 'Shadow', price: 999, icon: '💎' },
-      { name: 'Bangles', price: 999, icon: '💍' },
-      { name: 'Pack', price: 999, icon: '🎩' },
-      { name: 'Hero', price: 1499, icon: '🛡️' },
-      { name: 'Loot', price: 1999, icon: '👜' },
-      { name: 'Person', price: 2999, icon: '🧸' },
-      { name: 'Scooter', price: 4999, icon: '🏎️' },
-      { name: 'Inv...', price: 9999, icon: '📦' },
-      { name: 'Midas Gold', price: 14999, icon: '🍎' }
+      { name: 'Bear', price: 149, img: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png' },
+      { name: 'Play...', price: 199, img: 'https://cdn-icons-png.flaticon.com/512/3362/3362030.png' },
+      { name: 'Skull', price: 249, img: 'https://cdn-icons-png.flaticon.com/512/1231/1231143.png' },
+      { name: 'Mood', price: 249, img: 'https://cdn-icons-png.flaticon.com/512/2907/2907253.png' },
+      { name: 'Miracle', price: 249, img: 'https://cdn-icons-png.flaticon.com/512/2822/2822502.png' },
+      { name: 'Lamp', price: 299, img: 'https://cdn-icons-png.flaticon.com/512/3076/3076986.png' },
+      { name: 'Perfume', price: 399, img: 'https://cdn-icons-png.flaticon.com/512/3362/3362144.png' },
+      { name: 'Lucky', price: 499, img: 'https://cdn-icons-png.flaticon.com/512/2583/2583344.png' },
+      { name: 'Papillon', price: 599, img: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png' },
+      { name: 'Shadow', price: 999, img: 'https://cdn-icons-png.flaticon.com/512/1041/1041916.png' },
+      { name: 'Bangles', price: 999, img: 'https://cdn-icons-png.flaticon.com/512/3362/3362351.png' },
+      { name: 'Pack', price: 999, img: 'https://cdn-icons-png.flaticon.com/512/3076/3076753.png' },
+      { name: 'Hero', price: 1499, img: 'https://cdn-icons-png.flaticon.com/512/3177/3177359.png' },
+      { name: 'Loot', price: 1999, img: 'https://cdn-icons-png.flaticon.com/512/3177/3177422.png' },
+      { name: 'Person', price: 2999, img: 'https://cdn-icons-png.flaticon.com/512/3069/3069186.png' },
+      { name: 'Scooter', price: 4999, img: 'https://cdn-icons-png.flaticon.com/512/2972/2972185.png' },
+      { name: 'Inv...', price: 9999, img: 'https://cdn-icons-png.flaticon.com/512/2822/2822524.png' },
+      { name: 'Midas Gold', price: 14999, img: 'https://cdn-icons-png.flaticon.com/512/2907/2907234.png' }
     ];
 
     const drops = [
@@ -156,9 +155,56 @@
         const data = await res.json();
         userBalance = data.stars;
         document.getElementById('starsBalance').innerText = userBalance;
-        document.getElementById('profName').innerText = data.username || 'Игрок';
+        document.getElementById('profName').innerText = data.username || username;
         document.getElementById('profRole').innerText = data.role || 'Игрок';
         renderInventory(data.inventory);
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadMarket() {
+      try {
+        const res = await fetch('/api/market');
+        const items = await res.json();
+        const list = document.getElementById('marketList');
+        if (items.length === 0) {
+          list.innerHTML = '<p class="text-slate-500">На рынке пока нет товаров</p>';
+          return;
+        }
+        list.innerHTML = items.map(item => `
+          <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-2xl flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🖼️</span>
+              <div>
+                <div class="font-bold text-white">${item.itemName}</div>
+                <div class="text-[10px] text-slate-500">Продавец: @${item.sellerName}</div>
+              </div>
+            </div>
+            <button onclick="alert('Для покупки подключите TON кошелек!')" class="bg-cyan-600 px-3 py-1.5 rounded-xl font-bold text-white">${item.priceTon} TON</button>
+          </div>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function listNftOnMarket() {
+      const itemName = document.getElementById('nftNameInput').value;
+      const priceTon = parseFloat(document.getElementById('nftPriceInput').value);
+      if (!itemName || !priceTon) {
+        alert('Заполните название и цену!');
+        return;
+      }
+      try {
+        const res = await fetch('/api/market/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sellerName: username, itemName, itemIcon: '🖼️', priceTon })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('NFT успешно вы выставлен на маркет Fragment!');
+          document.getElementById('nftNameInput').value = '';
+          document.getElementById('nftPriceInput').value = '';
+          loadMarket();
+        }
       } catch (e) { console.error(e); }
     }
 
@@ -183,10 +229,10 @@
     function renderCases() {
       document.getElementById('casesGrid').innerHTML = casesData.map(c => `
         <div class="glass-card rounded-3xl p-4 flex flex-col items-center justify-between border border-slate-800">
-          <div class="text-4xl my-2">${c.icon}</div>
+          <img src="${c.img}" class="w-14 h-14 object-contain my-2" alt="case">
           <div class="font-extrabold text-sm mb-1 text-slate-200">${c.name}</div>
           <div class="text-xs font-bold text-amber-400 mb-3">⭐ ${c.price}</div>
-          <button onclick="openCase('${c.name}', ${c.price}, '${c.icon}')" class="w-full bg-blue-600 text-white font-extrabold py-2 rounded-xl text-xs">Открыть</button>
+          <button onclick="openCase('${c.name}', ${c.price}, '${c.img}')" class="w-full bg-blue-600 text-white font-extrabold py-2 rounded-xl text-xs">Открыть</button>
         </div>
       `).join('');
     }
@@ -216,9 +262,10 @@
       document.getElementById(`btn-${tab}`).classList.remove('text-slate-400');
 
       if (tab === 'top') loadLeaderboard();
+      if (tab === 'market') loadMarket();
     }
 
-    async function openCase(name, price, icon) {
+    async function openCase(name, price, img) {
       if (userBalance < price) {
         alert('Недостаточно звезд на балансе!');
         return;

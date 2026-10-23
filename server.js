@@ -17,28 +17,28 @@ if (mongoUri) {
     .catch(err => console.error('MongoDB Error:', err));
 }
 
-// Database Schemas
+// Schemas
 const userSchema = new mongoose.Schema({
   telegramId: { type: Number, required: true, unique: true },
   username: { type: String, default: 'Игрок' },
   stars: { type: Number, default: 150 },
   tonBalance: { type: Number, default: 0 },
-  role: { type: String, default: 'Игрок' }, // Тестер, Спонсор, Админ, Владелец
+  role: { type: String, default: 'Игрок' },
   inventory: { type: Array, default: [] },
   lastBonus: { type: Date, default: null }
 });
 const User = mongoose.model('User', userSchema);
 
 const marketSchema = new mongoose.Schema({
-  sellerId: Number,
   sellerName: String,
-  item: String,
+  itemName: String,
+  itemIcon: String,
   priceTon: Number,
   createdAt: { type: Date, default: Date.now }
 });
 const MarketItem = mongoose.model('MarketItem', marketSchema);
 
-// REST API
+// API
 app.get('/api/user/:id', async (req, res) => {
   try {
     let user = await User.findOne({ telegramId: req.params.id });
@@ -85,11 +85,22 @@ app.get('/api/market', async (req, res) => {
   }
 });
 
+app.post('/api/market/add', async (req, res) => {
+  const { sellerName, itemName, itemIcon, priceTon } = req.body;
+  try {
+    await MarketItem.create({ sellerName, itemName, itemIcon, priceTon });
+    const items = await MarketItem.find().sort({ createdAt: -1 });
+    res.json({ success: true, items });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Telegram Bot Integration
+// Telegram Bot
 const botToken = process.env.BOT_TOKEN;
 if (botToken) {
   const bot = new Telegraf(botToken);
@@ -102,59 +113,59 @@ if (botToken) {
       await User.create({ telegramId: id, username: ctx.from.username || 'Player', stars: 150 });
     }
     ctx.reply(
-      `💎 **NFT Drop Roulette & Fragment Market**\n\nПривет, ${ctx.from.first_name}! Твой стартовый баланс: **150 ⭐**`,
+      `💎 **NFT Drop Roulette & Fragment Market**\n\nПривет, ${ctx.from.first_name}! Твой баланс: **150 ⭐**`,
       {
         parse_mode: 'Markdown',
         ...Markup.keyboard([
           [Markup.button.webApp('🚀 Открыть NFT Drop WebApp', getAppUrl())],
-          ['🔑 Авторизация Админ / Спонсор']
+          ['🔑 Авторизация']
         ]).resize()
       }
     );
   });
 
-  // Авторизация Спонсора
+  // Панель Спонсора
   bot.hears('/auth Guy67pidoras', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Спонсор' });
-    ctx.reply('💼 **Вы вошли как СПОНСОР!**', {
+    ctx.reply('💼 **Панель Спонсора активирована!**', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
-        ['🎁 Выдать +500 ⭐', '🏷️ Назначить Метку'],
+        ['🎁 Выдать +500 ⭐', '🏷️ Выдать метку Спонсор'],
         ['🚀 Открыть NFT Drop WebApp']
       ]).resize()
     });
   });
 
-  // Авторизация Создателя
+  // Панель Создателя
   bot.hears('/auth 3861!+*@^Shwkw18#', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Владелец' });
-    ctx.reply('👑 **Вы вошли как СОЗДАТЕЛЬ (FULL ADMIN)!**', {
+    ctx.reply('👑 **Панель Создателя (FULL ADMIN) активирована!**', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
-        ['👥 Всего пользователей', '🟢 Статус сервера'],
+        ['👥 Пользователи', '🟢 Статус'],
         ['🎁 Выдать +1000 ⭐', '🔄 Глобальный Вайп'],
         ['🚀 Открыть NFT Drop WebApp']
       ]).resize()
     });
   });
 
-  bot.hears('👥 Всего пользователей', async (ctx) => {
+  bot.hears('👥 Пользователи', async (ctx) => {
     const count = await User.countDocuments();
-    ctx.reply(`📊 Всего игроков в базе данных: ${count}`);
+    ctx.reply(`📊 Всего игроков в базе: ${count}`);
   });
 
-  bot.hears('🟢 Статус сервера', (ctx) => {
-    ctx.reply('🟢 Сервер и система работае 24/7.');
+  bot.hears('🟢 Статус', (ctx) => {
+    ctx.reply('🟢 Сервер работает стабильно 24/7.');
   });
 
   bot.hears('🎁 Выдать +500 ⭐', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { $inc: { stars: 500 } });
-    ctx.reply('🎁 Вам начислено +500 ⭐!');
+    ctx.reply('🎁 Начислено +500 ⭐!');
   });
 
   bot.hears('🎁 Выдать +1000 ⭐', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { $inc: { stars: 1000 } });
-    ctx.reply('🎁 Вам начислено +1000 ⭐!');
+    ctx.reply('🎁 Начислено +1000 ⭐!');
   });
 
   bot.hears('🔄 Глобальный Вайп', async (ctx) => {
@@ -162,8 +173,8 @@ if (botToken) {
     ctx.reply('⚠️ Вайп выполнен! Все балансы сброшены.');
   });
 
-  bot.hears('🔑 Авторизация Админ / Спонсор', (ctx) => {
-    ctx.reply('Введите пароль командой:\n`/auth пароль`', { parse_mode: 'Markdown' });
+  bot.hears('🔑 Авторизация', (ctx) => {
+    ctx.reply('Введите пароль администратора или спонсора командой:\n`/auth пароль`', { parse_mode: 'Markdown' });
   });
 
   bot.launch().then(() => console.log('Bot running')).catch(console.error);
