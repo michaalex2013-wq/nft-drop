@@ -9,15 +9,15 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database Connection
+// Подключение к MongoDB
 const mongoUri = process.env.MONGO_URI;
 if (mongoUri) {
   mongoose.connect(mongoUri)
-    .then(() => console.log('[DB] Connected'))
-    .catch(err => console.error('[DB] Error:', err));
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error('MongoDB Error:', err));
 }
 
-// Schemas
+// Схемы данных
 const userSchema = new mongoose.Schema({
   telegramId: { type: Number, required: true, unique: true },
   username: { type: String, default: 'Player' },
@@ -37,11 +37,11 @@ const marketSchema = new mongoose.Schema({
 });
 const MarketItem = mongoose.model('MarketItem', marketSchema);
 
-// API Endpoints
+// API Маршруты
 app.get('/api/user/:id', async (req, res) => {
   try {
     let tid = Number(req.params.id);
-    if (!tid || isNaN(tid)) tid = 999999; // Защита от undefined
+    if (!tid || isNaN(tid)) tid = 123456;
     let user = await User.findOne({ telegramId: tid });
     if (!user) {
       user = await User.create({ telegramId: tid, username: 'Player_' + tid, stars: 150 });
@@ -101,7 +101,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Telegram Bot
+// Telegram Бот и две панели админки
 const botToken = process.env.BOT_TOKEN;
 if (botToken) {
   const bot = new Telegraf(botToken);
@@ -114,12 +114,12 @@ if (botToken) {
       await User.create({ telegramId: id, username: ctx.from.username || 'Player', stars: 150 });
     }
     ctx.reply(
-      `💎 **NFT Drop Service**\n\nПривет, ${ctx.from.first_name}!\nТвой баланс: **150 ⭐**`,
+      `💎 **NFT Drop Service**\n\nПривет, ${ctx.from.first_name}!\nБаланс: **150 ⭐**`,
       {
         parse_mode: 'Markdown',
         ...Markup.keyboard([
           [Markup.button.webApp('🚀 Открыть NFT Drop WebApp', getAppUrl())],
-          ['🔑 Авторизация (Админ / Спонсор)']
+          ['🔑 Авторизация']
         ]).resize()
       }
     );
@@ -128,7 +128,7 @@ if (botToken) {
   // Панель Спонсора
   bot.hears('/auth Guy67pidoras', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Спонсор' });
-    ctx.reply('💼 **Панель Спонсора активна!** Доступна выдача звёзд и управление.', {
+    ctx.reply('💼 **Панель Спонсора активирована!**', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
         ['🎁 Выдать +500 ⭐', '🚀 Открыть WebApp']
@@ -139,11 +139,11 @@ if (botToken) {
   // Панель Создателя
   bot.hears('/auth 3861!+*@^Shwkw18#', async (ctx) => {
     await User.findOneAndUpdate({ telegramId: ctx.from.id }, { role: 'Владелец' });
-    ctx.reply('👑 **Панель Создателя (FULL ADMIN) активна!**', {
+    ctx.reply('👑 **Панель Создателя (FULL ADMIN) активирована!**', {
       parse_mode: 'Markdown',
       ...Markup.keyboard([
-        ['👥 Пользователи', '🟢 Статус сервера'],
-        ['🎁 Выдать +1000 ⭐', '🔄 Глобальный Вайп'],
+        ['👥 Пользователи', '🟢 Статус'],
+        ['🎁 Выдать +1000 ⭐', '🔄 Вайп'],
         ['🚀 Открыть WebApp']
       ]).resize()
     });
@@ -154,8 +154,8 @@ if (botToken) {
     ctx.reply(`📊 Игроков в базе: ${count}`);
   });
 
-  bot.hears('🟢 Статус сервера', async (ctx) => {
-    ctx.reply('🟢 Сервер работает 24/7.');
+  bot.hears('🟢 Статус', (ctx) => {
+    ctx.reply('🟢 Сервер работает стабильно 24/7.');
   });
 
   bot.hears('🎁 Выдать +500 ⭐', async (ctx) => {
@@ -168,13 +168,13 @@ if (botToken) {
     ctx.reply('🎁 Начислено +1000 ⭐!');
   });
 
-  bot.hears('🔄 Глобальный Вайп', async (ctx) => {
+  bot.hears('🔄 Вайп', async (ctx) => {
     await User.updateMany({}, { stars: 150, inventory: [] });
     ctx.reply('⚠️ База данных сброшена!');
   });
 
-  bot.hears('🔑 Авторизация (Админ / Спонсор)', (ctx) => {
-    ctx.reply('Введите команду авторизации:\n`/auth ваш_пароль`', { parse_mode: 'Markdown' });
+  bot.hears('🔑 Авторизация', (ctx) => {
+    ctx.reply('Введите пароль командой:\n`/auth пароль`', { parse_mode: 'Markdown' });
   });
 
   bot.hears('🚀 Открыть WebApp', (ctx) => {
@@ -183,7 +183,7 @@ if (botToken) {
     ]).resize());
   });
 
-  bot.launch().then(() => console.log('Bot started')).catch(console.error);
+  bot.launch().then(() => console.log('Bot running')).catch(console.error);
 
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
